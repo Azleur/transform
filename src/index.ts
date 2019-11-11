@@ -1,5 +1,5 @@
-import { Rect } from "rect";
-import { Vec2 } from "vec2";
+import { Vec2 } from "@azleur/vec2";
+import { Rect } from "@azleur/rect";
 
 /**
  * Axis-aligned affine transform parameters (independent scaling).
@@ -29,12 +29,12 @@ export function InverseTransform(output: Vec2, transform: AffineTransform): Vec2
  *
  * zoom: modifier applied to scale after exact fit calculation (2.0 twice as big, 0.5 twice as small).
  */
-export type ScaleOptions = {
+export type StretchOptions = {
     zoom?: number,
 };
 
 /** Calculates AffineTransform parameters (offset, scale) used to map points in inner to points in outer. */
-export function ScaleStretch(inner: Rect, outer: Rect, options: ScaleOptions = {}): AffineTransform {
+export function ScaleStretch(inner: Rect, outer: Rect, options: StretchOptions = {}): AffineTransform {
     const zoom = (options.zoom === undefined) ? 1.0 : options.zoom;
 
     const diagIn = inner.Diagonal();

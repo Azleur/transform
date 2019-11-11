@@ -1,21 +1,28 @@
 {
-    "private": true,
-    "name": "transform",
+    "name": "@azleur/transform",
     "version": "0.1.0",
-    "author": "Azleur",
+    "author": "azleur",
+    "license": "ISC",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Azleur/transform.git"
+    },
+    "homepage": "https://github.com/Azleur/transform",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
         "test": "jest",
-        "test:run": "jest",
-        "test:watch": "jest --watch",
-        "test:coverage": "jest --collectCoverage",
-        "build": "rm -rf dist && tsc"
+        "build": "rm -rf dist && tsc && uglifyjs dist/*.js --compress --output dist/*.js"
     },
     "devDependencies": {
         "@types/jest": "^24.0.21",
         "jest": "^24.9.0",
         "ts-jest": "^24.1.0",
-        "typescript": "^3.6.4"
+        "typescript": "^3.6.4",
+        "uglify-js": "^3.6.8"
+    },
+    "dependencies": {
+        "@azleur/rect": "^0.1.0",
+        "@azleur/vec2": "^0.1.1"
     }
 }

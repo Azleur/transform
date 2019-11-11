@@ -1,6 +1,7 @@
-import { Rect } from 'rect';
-import { ScaleStretch, AffineTransform, ApplyTransform, ScaleFit, InverseTransform } from './index';
-import { Vec2 } from 'vec2';
+import { Vec2 } from '@azleur/vec2';
+import { Rect } from '@azleur/rect';
+
+import { ScaleStretch, AffineTransform, ApplyTransform, ScaleFit, InverseTransform } from '.';
 
 test("ScaleStretch(inner, outer, options?) returns an AffineTransform object representing how to map coordinates within inner to coordinates within outer", () => {
     const rect1 = new Rect(0, 0, 1, 1); // w: 1, h: 1.
