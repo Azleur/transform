@@ -61,6 +61,7 @@ export type UniformTransform = { offset: Vec2, scale: number, invertY: boolean }
  * invertY: if true, flips direction of growth of Y axis.
  * zoom: modifier applied to scale after exact fit calculation.
  */
+// TODO: Consider unifying StretchOptions and ScaleOptions into one object and adding inverX for completeness.
 export type FitOptions = {
     invertY?: boolean,
     zoom?: number;
@@ -69,7 +70,7 @@ export type FitOptions = {
 /** Find the scaling parameters that allow inner to fit inside outer with uniform scaling. */
 export function ScaleFit(inner: Rect, outer: Rect, options: FitOptions = {}): AffineTransform {
     const invertY = (options.invertY === undefined) ? false : options.invertY;
-    const scaleModifier = (options.zoom === undefined) ? 1.0 : options.zoom;
+    const zoom = (options.zoom === undefined) ? 1.0 : options.zoom;
 
     const flipY = invertY ? -1 : +1;
 
@@ -81,7 +82,7 @@ export function ScaleFit(inner: Rect, outer: Rect, options: FitOptions = {}): Af
 
     const sx = diagOut.x / diagIn.x;
     const sy = diagOut.y / diagIn.y;
-    const s = Math.min(sx, sy) * scaleModifier;
+    const s = Math.min(sx, sy) * zoom;
 
     const ox = co.x - s * ci.x;
     const oy = co.y - flipY * s * ci.y;
