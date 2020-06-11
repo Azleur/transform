@@ -1,5 +1,5 @@
 import { Vec2 } from "@azleur/vec2";
-import { Rect } from "@azleur/rect";
+import { Rect, BoundingBox } from "@azleur/rect";
 
 /**
  * Axis-aligned affine transform parameters (independent scaling).
@@ -8,21 +8,39 @@ import { Rect } from "@azleur/rect";
  */
 export type AffineTransform = { offset: Vec2, scale: Vec2 };
 
-/** Apply affine transform to point (output = offset + scale * inner). */
-export function ApplyTransform(input: Vec2, transform: AffineTransform): Vec2 {
+/** Apply the transform to a point. */
+export const TransformPoint = (input: Vec2, transform: AffineTransform): Vec2 => {
     return new Vec2(
         transform.offset.x + transform.scale.x * input.x,
         transform.offset.y + transform.scale.y * input.y
     );
-}
+};
 
-/** Apply the inverse transform to a vector. */
-export function InverseTransform(output: Vec2, transform: AffineTransform): Vec2 {
+/** Apply the transform to a rect. */
+export const TransformRect = (input: Rect, transform: AffineTransform): Rect => {
+    // Some trickery needed to ensure we don't end up with an upside down rect.
+    return BoundingBox(
+        TransformPoint(input.min, transform),
+        TransformPoint(input.max, transform)
+    );
+};
+
+/** Apply the inverse transform to a point. */
+export const InverseTransformPoint = (output: Vec2, transform: AffineTransform): Vec2 => {
     return new Vec2(
         (output.x - transform.offset.x) / transform.scale.x,
         (output.y - transform.offset.y) / transform.scale.y
     );
-}
+};
+
+/** Apply the inverse transform to a rect. */
+export const InverseTransformRect = (output: Rect, transform: AffineTransform): Rect => {
+    // Some trickery needed to ensure we don't end up with an upside down rect.
+    return BoundingBox(
+        InverseTransformPoint(output.min, transform),
+        InverseTransformPoint(output.max, transform)
+    );
+};
 
 /**
  * Additional options for ScaleStretch().
@@ -34,7 +52,7 @@ export type StretchOptions = {
 };
 
 /** Calculates AffineTransform parameters (offset, scale) used to map points in inner to points in outer. */
-export function ScaleStretch(inner: Rect, outer: Rect, options: StretchOptions = {}): AffineTransform {
+export const ScaleStretch = (inner: Rect, outer: Rect, options: StretchOptions = {}): AffineTransform => {
     const zoom = (options.zoom === undefined) ? 1.0 : options.zoom;
 
     const diagIn = inner.Diagonal();
@@ -68,7 +86,7 @@ export type FitOptions = {
 };
 
 /** Find the scaling parameters that allow inner to fit inside outer with uniform scaling. */
-export function ScaleFit(inner: Rect, outer: Rect, options: FitOptions = {}): AffineTransform {
+export const ScaleFit = (inner: Rect, outer: Rect, options: FitOptions = {}): AffineTransform => {
     const invertY = (options.invertY === undefined) ? false : options.invertY;
     const zoom = (options.zoom === undefined) ? 1.0 : options.zoom;
 
