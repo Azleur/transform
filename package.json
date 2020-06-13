@@ -12,7 +12,7 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "test": "jest",
-        "build": "rm -rf dist && tsc && uglifyjs dist/*.js --compress --output dist/*.js"
+        "build": "rm -rf dist && tsc && uglifyjs dist/*.js --compress --output dist/index.js"
     },
     "devDependencies": {
         "@types/jest": "^25.2.1",
