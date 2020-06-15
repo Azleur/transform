@@ -4,7 +4,8 @@ import { Rect } from '@azleur/rect';
 import {
     AffineTransform, ScaleFit, ScaleStretch,
     TransformPoint, InverseTransformPoint,
-    TransformRect, InverseTransformRect
+    TransformRect, InverseTransformRect,
+    TransformVec, InverseTransformVec,
 } from '.';
 
 test("ScaleStretch(inner, outer, options?) returns an AffineTransform object representing how to map coordinates within inner to coordinates within outer", () => {
@@ -38,7 +39,7 @@ test("TransformPoint(input, transform) applies transform to input", () => {
     // TODO: More cases.
 });
 
-test("InverseTransform(input, transform) applies inverse transform to input", () => {
+test("InverseTransformPoint(input, transform) applies inverse transform to input", () => {
     const rect1 = new Rect(0, 0, 1, 1); // w: 1, h: 1.
     const rect2 = new Rect(1, 2, 3, 5); // w: 2, h: 3.
 
@@ -111,4 +112,32 @@ test("InverseTransformRect() applies the inverse transform to a whole rect, resp
     expect(InverseTransformRect(doubleMiddle  , unitToDouble  )).toEqual(unitMiddle);
     expect(InverseTransformRect(plusOneMiddle , unitToPlusOne )).toEqual(unitMiddle);
     expect(InverseTransformRect(combinedMiddle, unitToCombined)).toEqual(unitMiddle);
+});
+
+test("TransformVec(input, transform) applies transform to input", () => {
+    const rect1 = new Rect(0, 0, 1, 1); // w: 1, h: 1.
+    const rect2 = new Rect(1, 2, 3, 5); // w: 2, h: 3.
+
+    const vec1 = new Vec2(1 / 2, 2 / 3);
+
+    const transform1: AffineTransform = ScaleStretch(rect1, rect2);
+    const out1: Vec2 = TransformVec(vec1, transform1);
+    // Only linear part matters.
+    expect(out1).toEqual({ x: 1, y: 2 });
+
+    // TODO: More cases.
+});
+
+test("InverseTransformVec(input, transform) applies inverse transform to input", () => {
+    const rect1 = new Rect(0, 0, 1, 1); // w: 1, h: 1.
+    const rect2 = new Rect(1, 2, 3, 5); // w: 2, h: 3.
+
+    const vec1 = new Vec2(1, 2);
+
+    const transform1: AffineTransform = ScaleStretch(rect1, rect2);
+    const out1: Vec2 = InverseTransformVec(vec1, transform1);
+    // Only linear part matters.
+    expect(out1).toEqual({ x: 1 / 2, y: 2 / 3 });
+
+    // TODO: More cases.
 });

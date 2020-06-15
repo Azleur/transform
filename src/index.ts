@@ -16,6 +16,11 @@ export const TransformPoint = (input: Vec2, transform: AffineTransform): Vec2 =>
     );
 };
 
+/** Apply the transform to a vector (linear part). */
+export const TransformVec = (input: Vec2, transform: AffineTransform): Vec2 => {
+    return new Vec2(transform.scale.x * input.x, transform.scale.y * input.y);
+};
+
 /** Apply the transform to a rect. */
 export const TransformRect = (input: Rect, transform: AffineTransform): Rect => {
     // Some trickery needed to ensure we don't end up with an upside down rect.
@@ -31,6 +36,11 @@ export const InverseTransformPoint = (output: Vec2, transform: AffineTransform):
         (output.x - transform.offset.x) / transform.scale.x,
         (output.y - transform.offset.y) / transform.scale.y
     );
+};
+
+/** Apply the inverse transform to a vector (linear part). */
+export const InverseTransformVec = (output: Vec2, transform: AffineTransform): Vec2 => {
+    return new Vec2(output.x / transform.scale.x, output.y / transform.scale.y);
 };
 
 /** Apply the inverse transform to a rect. */
