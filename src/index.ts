@@ -30,6 +30,14 @@ export const TransformRect = (input: Rect, transform: AffineTransform): Rect => 
     );
 };
 
+/** Apply the transform to an area (rect without an origin, linear transformation). */
+export const TransformArea = (input: Rect, transform: AffineTransform): Rect => {
+    return BoundingBox(
+        TransformVec(input.min, transform),
+        TransformVec(input.max, transform)
+    );
+};
+
 /** Apply the inverse transform to a point. */
 export const InverseTransformPoint = (output: Vec2, transform: AffineTransform): Vec2 => {
     return new Vec2(
@@ -52,6 +60,14 @@ export const InverseTransformRect = (output: Rect, transform: AffineTransform): 
     );
 };
 
+/** Apply the inverse transform to an area (rect without an origin, linear transformation). */
+export const InverseTransformArea = (input: Rect, transform: AffineTransform): Rect => {
+    return BoundingBox(
+        InverseTransformVec(input.min, transform),
+        InverseTransformVec(input.max, transform)
+    );
+};
+
 /**
  * Additional options for ScaleStretch().
  *
@@ -65,7 +81,7 @@ export type StretchOptions = {
 export const ScaleStretch = (inner: Rect, outer: Rect, options: StretchOptions = {}): AffineTransform => {
     const zoom = (options.zoom === undefined) ? 1.0 : options.zoom;
 
-    const diagIn = inner.Diagonal();
+    const diagIn  = inner.Diagonal();
     const diagOut = outer.Diagonal();
 
     const ci = inner.Center();
@@ -98,11 +114,11 @@ export type FitOptions = {
 /** Find the scaling parameters that allow inner to fit inside outer with uniform scaling. */
 export const ScaleFit = (inner: Rect, outer: Rect, options: FitOptions = {}): AffineTransform => {
     const invertY = (options.invertY === undefined) ? false : options.invertY;
-    const zoom = (options.zoom === undefined) ? 1.0 : options.zoom;
+    const zoom    = (options.zoom    === undefined) ? 1.0   : options.zoom;
 
     const flipY = invertY ? -1 : +1;
 
-    const diagIn = inner.Diagonal();
+    const diagIn  = inner.Diagonal();
     const diagOut = outer.Diagonal();
 
     const ci = inner.Center();
@@ -110,7 +126,7 @@ export const ScaleFit = (inner: Rect, outer: Rect, options: FitOptions = {}): Af
 
     const sx = diagOut.x / diagIn.x;
     const sy = diagOut.y / diagIn.y;
-    const s = Math.min(sx, sy) * zoom;
+    const s  = Math.min(sx, sy) * zoom;
 
     const ox = co.x - s * ci.x;
     const oy = co.y - flipY * s * ci.y;

@@ -5,7 +5,8 @@ import {
     AffineTransform, ScaleFit, ScaleStretch,
     TransformPoint, InverseTransformPoint,
     TransformRect, InverseTransformRect,
-    TransformVec, InverseTransformVec,
+    TransformVec, InverseTransformVec, 
+    TransformArea, InverseTransformArea
 } from '.';
 
 test("ScaleStretch(inner, outer, options?) returns an AffineTransform object representing how to map coordinates within inner to coordinates within outer", () => {
@@ -140,4 +141,42 @@ test("InverseTransformVec(input, transform) applies inverse transform to input",
     expect(out1).toEqual({ x: 1 / 2, y: 2 / 3 });
 
     // TODO: More cases.
+});
+
+test("TransformArea(input, transform) applies the forward linear part to a Rect", () => {
+    const unit     = new Rect(0, 0, 1, 1);
+    const double   = new Rect(0, 0, 2, 2);
+    const plusOne  = new Rect(1, 1, 2, 2);
+    const combined = new Rect(1, 2, 3, 5);
+
+    const unitMiddle     = new Rect(0.25, 0.25, 0.75, 0.75);
+    const doubleMapped   = new Rect(0.5 , 0.5 , 1.5 , 1.5 );
+    const combinedMapped = new Rect(0.5 , 0.75, 1.5 , 2.25);
+
+    const unitToDouble   = ScaleStretch(unit, double  );
+    const unitToPlusOne  = ScaleStretch(unit, plusOne );
+    const unitToCombined = ScaleStretch(unit, combined);
+
+    expect(TransformArea(unitMiddle, unitToDouble  )).toEqual(doubleMapped  );
+    expect(TransformArea(unitMiddle, unitToPlusOne )).toEqual(unitMiddle    );
+    expect(TransformArea(unitMiddle, unitToCombined)).toEqual(combinedMapped);
+});
+
+test("InverseTransformArea(input, transform) applies the inverse linear part to a Rect", () => {
+    const unit     = new Rect(0, 0, 1, 1);
+    const double   = new Rect(0, 0, 2, 2);
+    const plusOne  = new Rect(1, 1, 2, 2);
+    const combined = new Rect(1, 2, 3, 5);
+
+    const unitMiddle     = new Rect(0.25, 0.25, 0.75, 0.75);
+    const doubleMapped   = new Rect(0.5 , 0.5 , 1.5 , 1.5 );
+    const combinedMapped = new Rect(0.5 , 0.75, 1.5 , 2.25);
+
+    const unitToDouble   = ScaleStretch(unit, double  );
+    const unitToPlusOne  = ScaleStretch(unit, plusOne );
+    const unitToCombined = ScaleStretch(unit, combined);
+
+    expect(InverseTransformArea(doubleMapped  , unitToDouble  )).toEqual(unitMiddle);
+    expect(InverseTransformArea(unitMiddle    , unitToPlusOne )).toEqual(unitMiddle);
+    expect(InverseTransformArea(combinedMapped, unitToCombined)).toEqual(unitMiddle);
 });
